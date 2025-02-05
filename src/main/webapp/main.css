@@ -1,0 +1,16 @@
+
+TABLE {
+    width: 400px; /* Ўирина таблицы */
+    border-collapse: collapse; /* ”бираем двойные линии между €чейками */
+ margin: auto;
+   }
+
+TD, TH {
+
+    border: 1px solid black; /* ѕараметры рамки */
+    text-align: center;
+   }
+
+   TH {
+    text-align: center;
+   }

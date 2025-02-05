@@ -1,0 +1,99 @@
+
+
+body {
+width: 600px;
+ margin: auto;
+}
+
+h2{
+ text-align: center;
+ margin: 5px 0px;
+}
+
+table {
+width: 600px;
+margin-bottom: 20px;
+	border: 1px solid #dddddd;
+	border-collapse: collapse;
+}
+
+th {
+	font-weight: bold;
+	padding: 5px;
+	background: #efefef;
+	border: 1px solid #dddddd;
+}
+ td {
+	border: 1px solid #dddddd;
+	padding: 5px;
+	 text-align: center;
+}
+
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  padding: 8px 0px
+}
+
+
+
+/* Показать выпадающее меню при наведении курсора */
+.dropdown:hover .dropdown-content {display: block;}
+
+.action:hover {
+    background: #65994c; /* Цвет фона при наведении */
+    color: #fff; /* Цвет текста при наведении */
+   }
+
+
+.select {
+margin: 5px 10px
+}
+
+.input {
+margin: 5px 10px
+}
+
+.submit {
+margin: 5px 10px
+}
+
+.filter {
+width:295;
+display: inline-block;
+text-align: left;
+}
+
+.addbtn {
+width:295;
+display: inline-block;
+text-align: right;
+}
+
+#invisible {
+display: none;
+}
+
+#filter2 {
+width:295;
+margin:0px 0px 16px 0px
+}
+
+#filteredBy {
+display: inline-block;
+}
+
+#reset {
+display: inline-block;
+}
+
