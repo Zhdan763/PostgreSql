@@ -105,10 +105,16 @@ window.location ='tasks'+a;
 
 function changeButtonState(checkbox) {
             var btn = document.getElementById('invisible');
+            var btn2 = document.getElementById('invisible1');
+            var btn3 = document.getElementById('invisible2');
             if (checkbox.checked) {
                 btn.style.display='block';
+                btn2.style.display='block';
+                btn3.style.display='block';
             } else {
                 btn.style.display='none';
+                btn2.style.display='none';
+                btn3.style.display='none';
             }
         }
 

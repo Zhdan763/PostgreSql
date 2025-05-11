@@ -122,6 +122,17 @@ margin: 5px 10px
 
 #invisible {
 display: none;
+margin:0px 0px 16px 0px
+}
+
+#invisible1 {
+display: none;
+margin:0px 0px 16px 0px
+}
+
+#invisible2 {
+display: none;
+margin:0px 0px 16px 0px
 }
 
 #filter2 {

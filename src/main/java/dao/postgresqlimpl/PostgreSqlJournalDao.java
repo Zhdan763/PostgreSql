@@ -3,7 +3,6 @@ package dao.postgresqlimpl;
 import dao.JournalDao;
 import dao.ObjectDao;
 import domain.entity.JournalEntity;
-import exception.ConnectionException;
 import exception.DaoException;
 import util.Constants;
 
@@ -14,12 +13,8 @@ import java.util.List;
 public class PostgreSqlJournalDao implements ObjectDao<JournalEntity>, JournalDao {
     private Connection connection;
 
-    public PostgreSqlJournalDao(Connection connection) throws ConnectionException {
-        if (connection == null) {
-            throw new ConnectionException("Connection is null");
-        } else {
-            this.connection = connection;
-        }
+    public PostgreSqlJournalDao(Connection connection) {
+        this.connection=connection;
     }
 
     @Override
@@ -34,13 +29,7 @@ public class PostgreSqlJournalDao implements ObjectDao<JournalEntity>, JournalDa
         } catch (SQLException e) {
             System.out.println("Error! Class: " + PostgreSqlJournalDao.class.getName() + ". Date: " +
                     new java.util.Date() + ". Message: " + e);
-            if (e.getMessage().contains("существует")) {
-                throw new DaoException("Unable to create journal, because such a name exists ");
-            } else {
-                throw new DaoException("Unable to create user, because incorrect index");
-            }
-
-
+            throw new DaoException("Unable to create journal, because: " + e);
         }
     }
 
@@ -68,12 +57,11 @@ public class PostgreSqlJournalDao implements ObjectDao<JournalEntity>, JournalDa
             preparedStatement.setDate(3, object.getDate());
             preparedStatement.setString(4, object.getName());
             preparedStatement.setLong(5, object.getId());
-
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error! Class: " + PostgreSqlJournalDao.class.getName() + ". Date: " +
                     new java.util.Date() + ". Message: " + e);
-            throw new DaoException("Unable to update journal, because incorrect index");
+            throw new DaoException("Unable to update journal, because: " + e);
         }
     }
 
@@ -357,4 +345,25 @@ public class PostgreSqlJournalDao implements ObjectDao<JournalEntity>, JournalDa
         return journals;
     }
 
+    @Override
+    public Boolean checkJournal(JournalEntity journal) throws DaoException {
+        String sql = "SELECT EXISTS (SELECT id FROM journal WHERE id = ?)";
+        int id = (int) journal.getId();
+        Boolean exist = null;
+        ResultSet rs = null;
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, id);
+            rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+
+                exist = rs.getBoolean(Constants.EXISTS_COLUMN);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error! Class: " + PostgreSqlJournalDao.class.getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
+            throw new DaoException("Unable to check journal, because: " + e);
+        }
+        return exist;
+    }
 }

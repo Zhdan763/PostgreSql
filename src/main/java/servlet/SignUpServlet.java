@@ -1,23 +1,21 @@
 package servlet;
 
 import controller.UserController;
+import exception.ControllerException;
 import exception.DaoException;
 import exception.EncryptorException;
 import exception.NotInitializedException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet("/signup")
 public class SignUpServlet extends HttpServlet {
 
-    public SignUpServlet() {
-        System.out.println("in constructor SignUpServlet");
-    }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -44,7 +42,7 @@ public class SignUpServlet extends HttpServlet {
 
             UserController.getInstance().createUser(password, login);
             response.sendRedirect("login");
-        } catch (DaoException e) {
+        } catch (ControllerException e) {
             System.out.println("Error! Class: " + SignUpServlet.class.getName() + ". Date: " +
                     new java.util.Date() + ". Message: " + e);
             String error = e.getMessage();
@@ -55,7 +53,7 @@ public class SignUpServlet extends HttpServlet {
                 System.out.println("Error! Class: " + SignUpServlet.class.getName() + ". Date: " +
                         new java.util.Date() + ". Message: " + ex);
             }
-        } catch (IOException | EncryptorException | NotInitializedException e) {
+        } catch (IOException e) {
             System.out.println("Error! Class: " + SignUpServlet.class.getName() + ". Date: " +
                     new java.util.Date() + ". Message: " + e);
             String error = "Sorry, server error, try again later";

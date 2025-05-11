@@ -2,13 +2,13 @@ import controller.JournalController;
 import controller.TaskController;
 import controller.UserController;
 import dao.DaoManager;
-import exception.ConnectionException;
-import exception.PropertyException;
+import exception.DaoManagerException;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 
 public class Main implements ServletContextListener {
+
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -18,11 +18,14 @@ public class Main implements ServletContextListener {
             UserController.initInstance(daoManager.getUserDao());
             JournalController.initInstance(daoManager.getJournalDao());
             TaskController.initInstance(daoManager.getTaskDao());
-        } catch (ConnectionException | PropertyException e) {
+
+        } catch (DaoManagerException e) {
             System.out.println("Error! Class: " + Main.class.getName() + ". Date: " +
                     new java.util.Date() + ". Message: " + e);
             System.exit(1);
         }
+
+
     }
 
     @Override

@@ -2,14 +2,15 @@ package servlet;
 
 import controller.TaskController;
 import domain.Task;
+import exception.ControllerException;
 import exception.DaoException;
 import exception.NotInitializedException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class TasksNameDescServlet extends HttpServlet {
             List<Task> taskList = TaskController.getInstance().getTasksByJournalIdNameDesc(journalId);
             request.setAttribute("taskList", taskList);
             getServletContext().getRequestDispatcher("/tasks.jsp").forward(request, response);
-        } catch (DaoException e) {
+        } catch (ControllerException e) {
             System.out.println("Error! Class: " + TasksNameDescServlet.class.getName() + ". Date: " +
                     new java.util.Date() + ". Message: " + e);
             String error = e.getMessage();
@@ -36,7 +37,7 @@ public class TasksNameDescServlet extends HttpServlet {
                 System.out.println("Error! Class: " + TasksNameDescServlet.class.getName() + ". Date: " +
                         new java.util.Date() + ". Message: " + ex);
             }
-        } catch (IOException | ServletException | NotInitializedException e) {
+        } catch (IOException | ServletException e) {
             System.out.println("Error! Class: " + TasksNameDescServlet.class.getName() + ". Date: " +
                     new java.util.Date() + ". Message: " + e);
             String error = "Sorry, server error, try again later";

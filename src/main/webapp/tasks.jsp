@@ -13,7 +13,7 @@
 <div class="action1"><button class="add"><a href="journals">Back to journals</a></button></div>
 <div class="action2" id="filter">
 
-<form class="form" action="/tasks?journalId=${journalId}&journalName=${journalName}" method="post">
+<form class="form" action="tasks?journalId=${journalId}&journalName=${journalName}" method="post">
 <div class="dropdown">
 <button class="btn">Filter by:</a></button>
 <div class="dropdown-content">
@@ -37,13 +37,13 @@
 <div id="filter2" style="Display: none">
         <div id="filteredBy"><button >Filtered by ${type}: ${value} </button ></div>
         <div id="reset"><button >
-        <a href="/tasks?journalId=${journalId}&journalName=${journalName}">Reset filter</a></button></div>
+        <a href="tasks?journalId=${journalId}&journalName=${journalName}">Reset filter</a></button></div>
         </div>
 <div class="action3"><button class="add">
-<a href="/createTask?journalId=${journalId}&journalName=${journalName}">Add task</a></button></div>
+<a href="createTask?journalId=${journalId}&journalName=${journalName}">Add task</a></button></div>
 
 
-<form action="/deleteTaskCheckbox?journalId=${journalId}&journalName=${journalName}" method="post">
+<form action="deleteTaskCheckbox?journalId=${journalId}&journalName=${journalName}" method="post">
  <table>
         <tr>
             <th></th>
@@ -78,9 +78,11 @@
         </c:forEach>
 
     </table>
-    <input type="submit" id="invisible" value="Delete selected task(s) ">
+    <input type="submit" id="invisible" name="action" value="Delete selected task(s)">
+    <input type="submit" id="invisible1" name="action" value="Export selected task(s) with journal" >
+    <input type="submit" id="invisible2" name="action" value="Export selected task(s) without journal" >
 </form>
 
 </body>
-<script src="/tasks.js"></script>
+<script src="tasks.js"></script>
 </html>

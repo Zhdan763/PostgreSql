@@ -2,7 +2,7 @@
 
 <link href="viewCreateUpdate.css" rel="stylesheet">
 <body>
-<form action="/createTask?journalId=${journalId}&journalName=${journalName}" method ="post">
+<form action="createTask?journalId=${journalId}&journalName=${journalName}" method ="post">
 <h2>Create Task</h2>
     <table >
 
@@ -21,7 +21,7 @@
          </table>
 
          <div>
-         <button ><a href="/tasks?journalId=${journalId}&journalName=${journalName}">Back</a></button>
+         <button ><a href="tasks?journalId=${journalId}&journalName=${journalName}">Back</a></button>
          <input type="submit" value="Create"/>
          </div>
 
@@ -29,5 +29,5 @@
 
 	   </form>
 </body>
-<script src="/createTask.js"></script>
+<script src="createTask.js"></script>
 </html>

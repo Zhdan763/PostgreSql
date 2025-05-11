@@ -1,11 +1,10 @@
 package dao.postgresqlimpl;
 
-import exception.ConnectionException;
-import util.Constants;
 import dao.ObjectDao;
 import dao.UserDao;
 import domain.entity.UserEntity;
 import exception.DaoException;
+import util.Constants;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,12 +15,8 @@ import java.util.*;
 public class PostgreSqlUserDao implements ObjectDao<UserEntity>, UserDao {
     private Connection connection;
 
-    public PostgreSqlUserDao(Connection connection) throws ConnectionException {
-        if (connection==null) {
-            throw new ConnectionException("Connection is null");
-        } else {
-            this.connection = connection;
-        }
+    public PostgreSqlUserDao(Connection connection) {
+        this.connection = connection;
     }
 
     @Override
@@ -33,8 +28,8 @@ public class PostgreSqlUserDao implements ObjectDao<UserEntity>, UserDao {
             preparedStatement.setString(2, userEntity.getPassword());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlUserDao.class.getName()+". Date: "+
-                    new Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlUserDao.class.getName() + ". Date: " +
+                    new Date() + ". Message: " + e);
             if (e.getMessage().contains("существует")) {
                 throw new DaoException("Unable to create user, because such a name exists ");
             } else {
@@ -53,8 +48,8 @@ public class PostgreSqlUserDao implements ObjectDao<UserEntity>, UserDao {
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlUserDao.class.getName()+". Date: "+
-                    new Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlUserDao.class.getName() + ". Date: " +
+                    new Date() + ". Message: " + e);
             throw new DaoException("Unable to delete user, because incorrect index");
         }
     }
@@ -69,8 +64,8 @@ public class PostgreSqlUserDao implements ObjectDao<UserEntity>, UserDao {
             preparedStatement.setString(3, userEntity.getPassword());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlUserDao.class.getName()+". Date: "+
-                    new Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlUserDao.class.getName() + ". Date: " +
+                    new Date() + ". Message: " + e);
             throw new DaoException("Unable to update user, because incorrect index");
         }
 
@@ -90,8 +85,8 @@ public class PostgreSqlUserDao implements ObjectDao<UserEntity>, UserDao {
                 userEntity.setPassword(rs.getString(Constants.USER_PASSWORD_COLUMN));
             }
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlUserDao.class.getName()+". Date: "+
-                    new Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlUserDao.class.getName() + ". Date: " +
+                    new Date() + ". Message: " + e);
             throw new DaoException("Unable to get user, because incorrect index");
         }
         return userEntity;
@@ -115,8 +110,8 @@ public class PostgreSqlUserDao implements ObjectDao<UserEntity>, UserDao {
             }
 
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlUserDao.class.getName()+". Date: "+
-                    new Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlUserDao.class.getName() + ". Date: " +
+                    new Date() + ". Message: " + e);
             throw new DaoException("Unable to getAll user, because incorrect index");
         }
         return userEntityList;
@@ -138,8 +133,8 @@ public class PostgreSqlUserDao implements ObjectDao<UserEntity>, UserDao {
                 map.put(Constants.USER_PASSWORD_COLUMN, password);
             }
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlUserDao.class.getName()+". Date: "+
-                    new Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlUserDao.class.getName() + ". Date: " +
+                    new Date() + ". Message: " + e);
             throw new DaoException("Unable to get password user, because incorrect index");
         }
         return map.get(Constants.USER_PASSWORD_COLUMN);
@@ -163,8 +158,8 @@ public class PostgreSqlUserDao implements ObjectDao<UserEntity>, UserDao {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlUserDao.class.getName()+". Date: "+
-                    new Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlUserDao.class.getName() + ". Date: " +
+                    new Date() + ". Message: " + e);
             throw new DaoException("Unable to check login user, because incorrect index");
         }
         return check;

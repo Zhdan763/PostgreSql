@@ -1,11 +1,16 @@
 package domain.entity;
 
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.ToString;
 
 @Builder
 @ToString
+@Entity
+@Table(name = "users")
 public class UserEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String login;
     private String password;

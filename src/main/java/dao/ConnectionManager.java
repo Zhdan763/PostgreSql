@@ -14,9 +14,15 @@ public class ConnectionManager {
     private Connection connection;
     private PropertiesParser propertiesParser;
 
-    public ConnectionManager() throws ConnectionException, PropertyException {
+    public ConnectionManager() throws ConnectionException {
         this.connection = null;
-        this.propertiesParser = new PropertiesParser(Constants.PROPERTY_NAME);
+        try {
+            this.propertiesParser = new PropertiesParser(Constants.PROPERTY_NAME);
+        } catch (PropertyException e) {
+            System.out.println("Error! Class: " + getClass().getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
+            throw new ConnectionException("It is impossible to get a property");
+        }
         initConnection();
     }
 
@@ -48,13 +54,4 @@ public class ConnectionManager {
         return connection;
     }
 
-    public void closeConnection() throws ConnectionException {
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            System.out.println("Error! Class: " + ConnectionManager.class.getName() +
-                    ". Date: " + new Date() + ". Message: " + e.getMessage());
-            throw new ConnectionException("Failed to close connection" + e.getMessage());
-        }
-    }
 }

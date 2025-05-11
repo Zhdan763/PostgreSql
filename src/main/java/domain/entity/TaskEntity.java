@@ -1,4 +1,5 @@
 package domain.entity;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.ToString;
 import java.sql.Date;
@@ -6,12 +7,17 @@ import java.sql.Timestamp;
 
 @Builder
 @ToString
+@Entity
+@Table(name = "task")
 public class TaskEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
     private String description;
     private Timestamp date;
     private String status;
+    @Column(name="journal_id")
     private long journalId;
 
     public TaskEntity() {

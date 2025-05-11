@@ -24,5 +24,5 @@ public interface JournalDao extends ObjectDao<JournalEntity> {
 
     List<JournalEntity> getAllFilterByName(String value) throws DaoException;
 
-
+    Boolean checkJournal(JournalEntity journal) throws DaoException;
 }

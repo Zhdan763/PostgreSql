@@ -1,7 +1,7 @@
 <html>
 <link href="viewCreateUpdate.css" rel="stylesheet">
 <body>
-<form action="/login" method ="post">
+<form action="login" method ="post">
 <h1>Task manager</h1>
 <p></p>
 <h2>Login</h2>
@@ -18,7 +18,10 @@
     </table>
 
       <p> <input class="login" type ="submit" value="Login"/> </p>
-      <p>  <button class="login"><a href="/signup">Signup</a></button> </p>
+      <p>  <button class="login"><a href="signup">Signup</a></button> </p>
+
+
+
   </form>
 </body>
 </html>

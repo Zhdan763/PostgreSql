@@ -7,10 +7,16 @@
     <link href="journals.css" rel="stylesheet">
 
     <body>
+
         <h2>Journals</h2>
+
+        <div id="import"><button ><a href="import">Import</a></button></div>
+<div></div>
+
+
         <div id="type" style="Display: none">${type}</div>
             <div id="filter" class="filter">
-            <form class="form" action="/journals" method="post">
+            <form class="form" action="journals" method="post">
                 <div class="dropdown">
                     <button class="drop-btn">Filter by:</button>
                     <div class="dropdown-content">
@@ -32,19 +38,22 @@
         </div>
         <div id="filter2" style="Display: none">
         <div id="filteredBy"><button >Filtered by ${type}: ${value} </button ></div>
-        <div id="reset"><button ><a href="/journals">Reset filter</a></button></div>
+        <div id="reset"><button ><a href="journals">Reset filter</a></button></div>
         </div>
 
 
         <div class="addbtn">
-            <button class="add"><a href="/createJournal.jsp">Add journal</a></button>
+            <button class="add"><a href="createJournal.jsp">Add journal</a></button>
         </div>
-        <form action="/deleteJournalCheckbox" method="post">
+
+        <form action="deleteJournalCheckbox"  method="post">
+
+
         <table>
             <tr>
                 <th></th>
-                <th id="name" onclick="f1();" class="name"></th>
-                <th id="description" onclick="f2();" class="description"></th>
+                <th id="name" onclick="f1();" ></th>
+                <th id="description" onclick="f2();" ></th>
                 <th id="date" onclick="f3();"></th>
                 <th>Action</th>
             </tr>
@@ -67,9 +76,13 @@
                 </tr>
             </c:forEach>
         </table>
-         <input type="submit" id="invisible" value="Delete selected journal(s)">
+
+
+     <input type="submit" id="invisible" name="action" value="Delete selected journal(s)" >
+<input type="submit" id="invisible1" name="action" value="Export selected journal(s) with tasks" >
+<input type="submit" id="invisible2" name="action" value="Export selected journal(s) without tasks" >
         </form>
 
     </body>
-<script src="/journals.js"></script>
+<script src="journals.js"></script>
     </html>

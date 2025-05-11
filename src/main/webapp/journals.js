@@ -4,7 +4,9 @@ document.querySelectorAll('tr[data-href]').forEach(row => {
   });
 });
 
+
 let btn = document.getElementById('btn');
+
 
 const name= document.getElementById('name');
 const description= document.getElementById('description');
@@ -52,31 +54,31 @@ date.textContent='Date';
 
 
 function f1() {
-if(type=="" && currentUrl == "http://localhost:8888/journals" ) {
+if(type=="" && !currentUrl.includes("NameAsc")&& !currentUrl.includes("NameDesc") ) {
 window.location ='journalsNameAsc';
-} else if(currentUrl == "http://localhost:8888/journalsNameAsc" && type=="") {
+} else if(currentUrl.includes("Asc")&& type=="") {
 window.location ='journalsNameDesc';
-} else if (currentUrl == "http://localhost:8888/journalsNameDesc" && type=="" ) {
+} else if (currentUrl.includes("Desc")&& type=="" ) {
 window.location ='journals';
 }
 }
 
 function f2() {
-if(type=="" && currentUrl == "http://localhost:8888/journals") {
+if(type=="" && !currentUrl.includes("DescriptionAsc")&& !currentUrl.includes("DescriptionDesc")) {
 window.location ='journalsDescriptionAsc';
-}else if(currentUrl == "http://localhost:8888/journalsDescriptionAsc" && type=="") {
+}else if(currentUrl.includes("DescriptionAsc") && type=="" ) {
 window.location ='journalsDescriptionDesc';
-} else if (currentUrl == "http://localhost:8888/journalsDescriptionDesc" && type=="") {
+} else if (currentUrl.includes("DescriptionDesc") && type=="") {
 window.location ='journals';
 }
 }
 
 function f3() {
-if(type=="" && currentUrl == "http://localhost:8888/journals") {
+if(type=="" && !currentUrl.includes("DateAsc")&& !currentUrl.includes("DateDesc")) {
 window.location ='journalsDateAsc';
-} else if(currentUrl == "http://localhost:8888/journalsDateAsc" && type=="") {
+} else if(currentUrl.includes("DateAsc") && type=="" ) {
 window.location ='journalsDateDesc';
-} else if (currentUrl == "http://localhost:8888/journalsDateDesc" && type=="") {
+} else if (currentUrl.includes("DateDesc") && type=="") {
 window.location ='journals';
 }
 }
@@ -85,10 +87,16 @@ window.location ='journals';
 
 function changeButtonState(checkbox) {
             var btn = document.getElementById('invisible');
+            var btn2 = document.getElementById('invisible1');
+            var btn3 = document.getElementById('invisible2');
             if (checkbox.checked) {
                 btn.style.display='block';
+                btn2.style.display='block';
+                btn3.style.display='block';
             } else {
                 btn.style.display='none';
+                btn2.style.display='none';
+                btn3.style.display='none';
             }
         }
 

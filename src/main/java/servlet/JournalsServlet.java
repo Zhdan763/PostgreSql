@@ -2,26 +2,28 @@ package servlet;
 
 import controller.JournalController;
 import domain.Journal;
+import exception.ControllerException;
 import exception.DaoException;
 import exception.NotInitializedException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
 @WebServlet("/journals")
 public class JournalsServlet extends HttpServlet {
 
+
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
             List<Journal> journalList = JournalController.getInstance().getAll();
             request.setAttribute("test", journalList);
             getServletContext().getRequestDispatcher("/journals.jsp").forward(request, response);
-        } catch (DaoException e) {
+        } catch (ControllerException e) {
             System.out.println("Error! Class: " + JournalsServlet.class.getName() + ". Date: " +
                     new java.util.Date() + ". Message: " + e);
             String error = e.getMessage();
@@ -32,7 +34,7 @@ public class JournalsServlet extends HttpServlet {
                 System.out.println("Error! Class: " + JournalsServlet.class.getName() + ". Date: " +
                         new java.util.Date() + ". Message: " + ex);
             }
-        } catch (ServletException | IOException | NotInitializedException e) {
+        } catch (ServletException | IOException e) {
             System.out.println("Error! Class: " + JournalsServlet.class.getName() + ". Date: " +
                     new java.util.Date() + ". Message: " + e);
             String error = "Sorry, server error, try again later";
@@ -70,7 +72,7 @@ public class JournalsServlet extends HttpServlet {
             request.setAttribute("type", type);
             request.setAttribute("value", value);
             getServletContext().getRequestDispatcher("/journals.jsp?hello").forward(request, response);
-        } catch (DaoException e) {
+        } catch (ControllerException e) {
             System.out.println("Error! Class: " + JournalsServlet.class.getName() + ". Date: " +
                     new java.util.Date() + ". Message: " + e);
             String error = e.getMessage();
@@ -81,7 +83,7 @@ public class JournalsServlet extends HttpServlet {
                 System.out.println("Error! Class: " + JournalsServlet.class.getName() + ". Date: " +
                         new java.util.Date() + ". Message: " + ex);
             }
-        } catch (ServletException | IOException | NotInitializedException e) {
+        } catch (ServletException | IOException e) {
             System.out.println("Error! Class: " + JournalsServlet.class.getName() + ". Date: " +
                     new java.util.Date() + ". Message: " + e);
             String error = "Sorry, server error, try again later";

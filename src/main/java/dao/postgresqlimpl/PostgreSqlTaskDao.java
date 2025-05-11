@@ -1,11 +1,10 @@
 package dao.postgresqlimpl;
 
-import exception.ConnectionException;
-import util.Constants;
 import dao.ObjectDao;
 import dao.TaskDao;
 import domain.entity.TaskEntity;
 import exception.DaoException;
+import util.Constants;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,14 +13,8 @@ import java.util.List;
 public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
     private Connection connection;
 
-    public PostgreSqlTaskDao(Connection connection) throws ConnectionException {
-
-        if (connection==null) {
-            throw new ConnectionException("Connection is null");
-        } else {
-            this.connection = connection;
-        }
-
+    public PostgreSqlTaskDao(Connection connection) {
+        this.connection = connection;
     }
 
     @Override
@@ -30,7 +23,6 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, taskEntity.getName());
-//            preparedStatement.setDate(2, taskEntity.getDate());
             preparedStatement.setTimestamp(2, taskEntity.getDate());
             preparedStatement.setString(3, taskEntity.getStatus());
             preparedStatement.setLong(4, taskEntity.getJournalId());
@@ -38,14 +30,9 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlTaskDao.class.getName()+". Date: "+
-                    new java.util.Date()+". Message: "+e);
-            if (e.getMessage().contains("существует")) {
-                throw new DaoException("Unable to create task, because such a name exists ");
-            } else {
-                throw new DaoException("Unable to create user, because incorrect index");
-            }
-
+            System.out.println("Error! Class: " + PostgreSqlTaskDao.class.getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
+            throw new DaoException("Unable to create task, because: " + e.getMessage());
         }
 
     }
@@ -59,8 +46,8 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlTaskDao.class.getName()+". Date: "+
-                    new java.util.Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlTaskDao.class.getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
             throw new DaoException("Unable to delete task, because incorrect index");
         }
     }
@@ -79,9 +66,9 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
             preparedStatement.setLong(7, object.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlTaskDao.class.getName()+". Date: "+
-                    new java.util.Date()+". Message: "+e);
-            throw new DaoException("Unable to update task, because incorrect index");
+            System.out.println("Error! Class: " + PostgreSqlTaskDao.class.getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
+            throw new DaoException("Unable to update task, because: " + e);
         }
 
     }
@@ -104,8 +91,8 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
                 taskEntity.setDescription(Constants.TASK_DESCRIPTION_COLUMN);
             }
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlTaskDao.class.getName()+". Date: "+
-                    new java.util.Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlTaskDao.class.getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
             throw new DaoException("Unable to get task, because incorrect index");
         }
         return taskEntity;
@@ -132,8 +119,8 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
             }
 
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlTaskDao.class.getName()+". Date: "+
-                    new java.util.Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlTaskDao.class.getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
             throw new DaoException("Unable to get all tasks, because incorrect index");
         }
         return taskEntities;
@@ -144,6 +131,8 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
         ResultSet rs = null;
         List<TaskEntity> taskEntities = new ArrayList<>();
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+
             preparedStatement.setInt(1, journalId);
             rs = preparedStatement.executeQuery();
             while (rs.next()) {
@@ -159,8 +148,38 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
             }
 
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlTaskDao.class.getName()+". Date: "+
-                    new java.util.Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlTaskDao.class.getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
+            throw new DaoException("Unable to get task, because incorrect index");
+        }
+        return taskEntities;
+    }
+
+    @Override
+    public List<TaskEntity> getTasksByJournalIdArray(int[] journalId) throws DaoException {
+        String sql = "SELECT * FROM task WHERE journal_id=?";
+        ResultSet rs = null;
+        List<TaskEntity> taskEntities = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            for (int i = 0; i < journalId.length; i++) {
+                preparedStatement.setInt(1, journalId[i]);
+                rs = preparedStatement.executeQuery();
+                while (rs.next()) {
+                    TaskEntity taskEntity = TaskEntity.builder()
+                            .id(rs.getInt(Constants.TASK_ID_COLUMN))
+                            .name(rs.getString(Constants.TASK_NAME_COLUMN))
+                            .description(rs.getString(Constants.TASK_DESCRIPTION_COLUMN))
+                            .date(rs.getTimestamp(Constants.TASK_DATE_COLUMN))
+                            .status(rs.getString(Constants.TASK_STATUS_COLUMN))
+                            .journalId(rs.getInt(Constants.TASK_JOURNAL_ID_COLUMN))
+                            .build();
+                    taskEntities.add(taskEntity);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error! Class: " + PostgreSqlTaskDao.class.getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
             throw new DaoException("Unable to get task, because incorrect index");
         }
         return taskEntities;
@@ -187,8 +206,8 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
             }
 
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlTaskDao.class.getName()+". Date: "+
-                    new java.util.Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlTaskDao.class.getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
             throw new DaoException("Unable to get task, because incorrect index");
         }
         return taskEntities;
@@ -215,8 +234,8 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
             }
 
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlTaskDao.class.getName()+". Date: "+
-                    new java.util.Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlTaskDao.class.getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
             throw new DaoException("Unable to get task, because incorrect index");
         }
         return taskEntities;
@@ -243,8 +262,8 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
             }
 
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlTaskDao.class.getName()+". Date: "+
-                    new java.util.Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlTaskDao.class.getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
             throw new DaoException("Unable to get task, because incorrect index");
         }
         return taskEntities;
@@ -271,8 +290,8 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
             }
 
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlTaskDao.class.getName()+". Date: "+
-                    new java.util.Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlTaskDao.class.getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
             throw new DaoException("Unable to get task, because incorrect index");
         }
         return taskEntities;
@@ -299,8 +318,8 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
             }
 
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlTaskDao.class.getName()+". Date: "+
-                    new java.util.Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlTaskDao.class.getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
             throw new DaoException("Unable to get task, because incorrect index");
         }
         return taskEntities;
@@ -327,8 +346,8 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
             }
 
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlTaskDao.class.getName()+". Date: "+
-                    new java.util.Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlTaskDao.class.getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
             throw new DaoException("Unable to get task, because incorrect index");
         }
         return taskEntities;
@@ -355,8 +374,8 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
             }
 
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlTaskDao.class.getName()+". Date: "+
-                    new java.util.Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlTaskDao.class.getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
             throw new DaoException("Unable to get task, because incorrect index");
         }
         return taskEntities;
@@ -383,8 +402,8 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
             }
 
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlTaskDao.class.getName()+". Date: "+
-                    new java.util.Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlTaskDao.class.getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
             throw new DaoException("Unable to get task, because incorrect index");
         }
         return taskEntities;
@@ -397,7 +416,7 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
         List<TaskEntity> taskEntities = new ArrayList<>();
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, journalId);
-            preparedStatement.setString(2, "%"+value+"%");
+            preparedStatement.setString(2, "%" + value + "%");
             rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 TaskEntity taskEntity = TaskEntity.builder()
@@ -412,8 +431,8 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
             }
 
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlTaskDao.class.getName()+". Date: "+
-                    new java.util.Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlTaskDao.class.getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
             throw new DaoException("Unable to get task, because incorrect index");
         }
         return taskEntities;
@@ -426,7 +445,7 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
         List<TaskEntity> taskEntities = new ArrayList<>();
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, journalId);
-            preparedStatement.setString(2, "%"+value+"%");
+            preparedStatement.setString(2, "%" + value + "%");
             rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 TaskEntity taskEntity = TaskEntity.builder()
@@ -441,8 +460,8 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
             }
 
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlTaskDao.class.getName()+". Date: "+
-                    new java.util.Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlTaskDao.class.getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
             throw new DaoException("Unable to get task, because incorrect index");
         }
         return taskEntities;
@@ -452,7 +471,7 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
     public List<TaskEntity> getTasksByJournalIdFilterByDate(int journalId, String value) throws DaoException {
         String sql = "SELECT * FROM task WHERE journal_id=? AND date =?";
         ResultSet rs = null;
-        Date date=Date.valueOf(value);
+        Date date = Date.valueOf(value);
         List<TaskEntity> taskEntities = new ArrayList<>();
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, journalId);
@@ -471,8 +490,8 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
             }
 
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlTaskDao.class.getName()+". Date: "+
-                    new java.util.Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlTaskDao.class.getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
             throw new DaoException("Unable to get task, because incorrect index");
         }
         return taskEntities;
@@ -485,7 +504,7 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
         List<TaskEntity> taskEntities = new ArrayList<>();
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, journalId);
-            preparedStatement.setString(2, "%"+value+"%");
+            preparedStatement.setString(2, "%" + value + "%");
             rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 TaskEntity taskEntity = TaskEntity.builder()
@@ -500,14 +519,32 @@ public class PostgreSqlTaskDao implements ObjectDao<TaskEntity>, TaskDao {
             }
 
         } catch (SQLException e) {
-            System.out.println("Error! Class: "+ PostgreSqlTaskDao.class.getName()+". Date: "+
-                    new java.util.Date()+". Message: "+e);
+            System.out.println("Error! Class: " + PostgreSqlTaskDao.class.getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
             throw new DaoException("Unable to get task, because incorrect index");
         }
         return taskEntities;
     }
 
+    @Override
+    public Boolean checkTask(TaskEntity taskEntity) throws DaoException {
+        String sql = "SELECT EXISTS (SELECT id FROM task WHERE id = ?)";
+        int id = (int) taskEntity.getId();
+        Boolean exist = null;
+        ResultSet rs = null;
 
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, id);
+            rs = preparedStatement.executeQuery();
+            while (rs.next()) {
 
-
+                exist = rs.getBoolean(Constants.EXISTS_COLUMN);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error! Class: " + PostgreSqlJournalDao.class.getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
+            throw new DaoException("Unable to check task, because: " + e);
+        }
+        return exist;
+    }
 }

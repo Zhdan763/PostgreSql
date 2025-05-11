@@ -13,6 +13,8 @@ public class Encryptor {
         try {
             digest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
+            System.out.println("Error! Class: " + getClass().getName() + ". Date: " +
+                    new java.util.Date() + ". Message: " + e);
             throw new EncryptorException("impossible to use SHA-256");
         }
         byte[] hashBytes = digest.digest(data.getBytes());

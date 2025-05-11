@@ -1,7 +1,7 @@
 <html>
 <link href="viewCreateUpdate.css" rel="stylesheet">
 <body>
-<form action="/createJournal" method ="post">
+<form action="createJournal" method ="post">
 <h2>Create Journal</h2>
     <table >
 
@@ -16,7 +16,7 @@
 
     </table>
 <div>
-<button ><a href="/journals">Back</a></button>
+<button ><a href="journals">Back</a></button>
 <input type="submit" value="Create"/>
 </div>
 

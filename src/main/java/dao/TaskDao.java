@@ -6,7 +6,8 @@ import exception.DaoException;
 import java.util.List;
 
 public interface TaskDao extends ObjectDao<TaskEntity> {
-    List<TaskEntity> getTasksByJournalId(int journalId) throws DaoException;
+    List<TaskEntity> getTasksByJournalId(int  journalId) throws DaoException;
+    List<TaskEntity> getTasksByJournalIdArray(int [] journalId) throws DaoException;
 
     List<TaskEntity> getTasksByJournalIdNameAsc(int journalId) throws DaoException;
 
@@ -32,8 +33,6 @@ public interface TaskDao extends ObjectDao<TaskEntity> {
 
     List<TaskEntity> getTasksByJournalIdFilterByStatus(int journalId, String value) throws DaoException;
 
-
-
-
+    Boolean checkTask(TaskEntity taskEntity) throws DaoException;
 
 }
